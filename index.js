@@ -47,8 +47,7 @@ async function asyncTrackPageview(pageName, req, res) {
   try {
     const newPageview = new Pageview({page: pageName, ipAddress: getIp(req)});
     await newPageview.save();
-    // Returns the new user that is created in the database
-    res.json({ pageview: newPageview });
+    return newPageview;
   } catch(error) {
     console.error(error);
   }
@@ -57,9 +56,40 @@ async function asyncTrackPageview(pageName, req, res) {
 // Note: using `force: true` will drop the table if it already exists
 // Now the `users` table in the database corresponds to the model definition
 Pageview.sync({ force: true }); 
+
+// CREATE
 app.get('/', (req, res) => {
   asyncTrackPageview('home', req, res);
+  // Returns the new user that is created in the database
   res.json({ message: 'Hello World' })
+});
+
+// UPDATE
+app.get('/manipulate', (req, res) => {
+  // DO SOMETHING
+});
+
+// READ
+app.get('/pageviews/notrack', async (req, res) => {
+  const pageViews = await Pageview.findAll({
+    where: {
+      ipAddress: getIp(req)
+    }
+  });
+  console.log(pageViews);
+  res.json({ pageViews });
+});
+
+// CREATE + READ
+app.get('/pageviews', async (req, res) => {
+  await asyncTrackPageview('pageviews', req, res);
+  const pageViews = await Pageview.findAll({
+    where: {
+      ipAddress: getIp(req)
+    }
+  });
+  console.log(pageViews);
+  res.json({ pageViews });
 });
 
 app.listen(PORT, () => {
