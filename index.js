@@ -10,7 +10,7 @@ sequelize
   .authenticate()
   .then(() => {
     console.log('Connection has been established successfully.');
-  });
+  })
   .catch(err => {
     console.error('Unable to connect to the database:', err);
   });
@@ -61,5 +61,5 @@ app.get('/user/:userId', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`
-}));
+  console.log(`Example app listening on port ${PORT}!`);
+});
